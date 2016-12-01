@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import cz.uhk.pro2.flappy.game.GameBoard;
 import cz.uhk.pro2.flappy.game.Tile;
@@ -27,9 +29,19 @@ public class CsvGameBoardLoader implements GameBoardLoader{
 			){
 			String[] cells = br.readLine().split(";");
 			int typeCount = Integer.parseInt(cells[0]);
+			Map<String, Tile> tileTypes = new HashMap<>();
 			for(int i = 0; i<typeCount;i++){
-				br.readLine();
-				// TODO zatím pøeskoèíme øádky typu tileset 
+				cells = br.readLine().split(";");
+				String tileType = cells[0];
+				String type = cells[1];
+				int x = Integer.parseInt(cells[2]);
+				int y = Integer.parseInt(cells[3]);
+				int w = Integer.parseInt(cells[4]);
+				int h = Integer.parseInt(cells[5]);
+				String url = cells[6];
+//				tileTypes[i] = new WallTile(new Image);
+				Tile tile = createTile(type, x, y, w, h, url);
+				tileTypes.put(tileType, tile);
 			}
 			cells = br.readLine().split(";");
 			int columns = Integer.parseInt(cells[1]);
@@ -42,17 +54,9 @@ public class CsvGameBoardLoader implements GameBoardLoader{
 				cells = br.readLine().split(";");
 				for (int j = 0; j<columns;j++){
 					String cell = (j<cells.length)?cells[j]:"";
-					// když buòka v CSV chybí, považujeme ji za prázdnou
-//					switch (cell){
-//						case "": break;
-//						default: tiles[j][i] = new WallTile();
-//					}
-//					if(cell != ""){
-					if(!("".equals(cell))){
-						tiles[i][j] = new WallTile();
-					}else{
-//						tiles[j][i] = 
-					}
+					
+//					získáme odpovídající typ dlaždice z hashmapy
+					tiles[i][j] = tileTypes.get(cell);
 				}
 			}
 			GameBoard gb = new GameBoard(tiles);
@@ -60,6 +64,11 @@ public class CsvGameBoardLoader implements GameBoardLoader{
 		} catch (IOException e) {
 			throw new RuntimeException("Occured error while reading file", e);
 		}
+	}
+
+
+	private Tile createTile(String type, int x, int y, int w, int h, String url) {
+		return null;
 	}
 	
 }
