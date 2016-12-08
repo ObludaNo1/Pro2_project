@@ -1,14 +1,21 @@
 package cz.uhk.pro2.flappy.service;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 import cz.uhk.pro2.flappy.game.GameBoard;
 import cz.uhk.pro2.flappy.game.Tile;
+import cz.uhk.pro2.flappy.game.tiles.EmptyTile;
 import cz.uhk.pro2.flappy.game.tiles.WallTile;
 
 public class CsvGameBoardLoader implements GameBoardLoader{
@@ -68,7 +75,34 @@ public class CsvGameBoardLoader implements GameBoardLoader{
 
 
 	private Tile createTile(String type, int x, int y, int w, int h, String url) {
-		return null;
+		
+		try {
+			// stáhnout img z URL a uložit do promìnné
+			BufferedImage originalImage = ImageIO.read(new URL(url));
+			
+			//vyøezání odpovídajícího spritu z velkého obrázku
+			BufferedImage croppedImage = originalImage.getSubimage(x, y, w, h);
+			
+			//zmenšíme/zvìtšíme, aby sedìl na velikost dlaždice
+			BufferedImage resizedImage = new BufferedImage(Tile.SIZE, Tile.SIZE, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g = resizedImage.createGraphics();
+			g.drawImage(croppedImage, 0, 0, Tile.SIZE, Tile.SIZE, null);
+			
+			//vytvoøíme odpovídající typ dlaždice
+//			Tile tile;
+			switch(type){
+				case "wall": return new WallTile(resizedImage);
+				default: return new EmptyTile(resizedImage);
+			}
+			
+			
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("Wrong url of image "+type+": "+url, e);
+		} catch (IOException e) {
+			throw new RuntimeException("Error while reading file "+type+": "+url, e);
+		}
+		
+//		return null;
 	}
 	
 }
