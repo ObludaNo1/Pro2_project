@@ -11,7 +11,7 @@ public interface Tile {
 	/**
 	 * sirka a vyska dlazdice v px
 	 */
-	static final int SIZE = 20;
+	static final int SIZE = 50;
 	/**
 	 * Kresli herni objekt na platno g
 	 * @param x x-ova souradnice v px na obrazovce, kam se dlazdice vykresli

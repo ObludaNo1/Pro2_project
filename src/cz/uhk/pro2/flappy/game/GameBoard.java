@@ -2,6 +2,7 @@ package cz.uhk.pro2.flappy.game;
 
 import java.awt.Graphics;
 
+import cz.uhk.pro2.flappy.game.tiles.EmptyTile;
 import cz.uhk.pro2.flappy.game.tiles.WallTile;
 
 public class GameBoard implements TickAware {
@@ -9,10 +10,10 @@ public class GameBoard implements TickAware {
 	int shiftX=30;
 	int viewportWidth = 400;  // TODO
 	Bird bird;
+	boolean gameOver = false;
 	
 	public GameBoard(){
 		this.tiles = new Tile[20][20]; //TODO
-		tiles[2][1]=new WallTile();
 		bird = new Bird(viewportWidth/4,tiles.length*Tile.SIZE/2);
 	}
 	
@@ -26,7 +27,7 @@ public class GameBoard implements TickAware {
 		bird = new Bird(viewportWidth/4,tiles.length*Tile.SIZE/2);
 	}
 	
-	public void draw(Graphics g){
+	public void drawAndTestCollisions(Graphics g){
 		int minJ = shiftX/Tile.SIZE; //spocitame prvni j index bunky kterou ma smysl kreslit (je videt na obrazovce)
 		int maxJ = minJ + viewportWidth/Tile.SIZE + 2; //+2 protoze celociselne delime jak shiftX tak viewportWidth ale chceme 'zaokrouhlit' nahoru
 		for(int i = 0; i < tiles.length; i++){
@@ -38,13 +39,21 @@ public class GameBoard implements TickAware {
 				if(t != null){ //je na souradnicich i j dlazdice?
 					int screenX=j*Tile.SIZE-shiftX;
 					int screenY=i*Tile.SIZE;
+					
+					// nakreslíme dlaždici
 					t.draw(g, screenX, screenY);
+					//otestujeme možnou kolizi dlaždice s ptákem
+					
+					if(tiles[i][j2].getClass() == WallTile.class)
+						if(bird.getY()<0 || bird.getY()>tiles.length*Tile.SIZE || bird.collidesWithRectangle(screenX, screenY, Tile.SIZE, Tile.SIZE))
+//							System.out.println("KOLIZE!!!!!!!");
+						    //doslo ke kolizi ptáka s dlaždicí
+							gameOver = true;
 				}
 			}				
 		}
 		
 		bird.draw(g);
-		
 	}
 
 	@Override
@@ -52,8 +61,11 @@ public class GameBoard implements TickAware {
 //		s každým tickem ve høe posuneme hru o jeden px
 //		tj. poèet tickù a pixelù posunu se rovnají
 		
-		shiftX = (int)ticksSinceStart;
-		bird.tick(ticksSinceStart);
+		if(!gameOver){
+			shiftX = (int)ticksSinceStart;
+			bird.tick(ticksSinceStart);
+			
+		}
 		
 //		TODO dame vedet jeste ptakovi ze hodiny ticknuli
 		

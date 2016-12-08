@@ -91,8 +91,10 @@ public class CsvGameBoardLoader implements GameBoardLoader{
 			//vytvoøíme odpovídající typ dlaždice
 //			Tile tile;
 			switch(type){
-				case "wall": return new WallTile(resizedImage);
-				default: return new EmptyTile(resizedImage);
+				case "Wall": return new WallTile(resizedImage);
+				case "Empty": return new EmptyTile(resizedImage);
+				case "Bonus": return new EmptyTile(resizedImage);
+				default: throw new RuntimeException("Unknown tile type: "+type);
 			}
 			
 			
