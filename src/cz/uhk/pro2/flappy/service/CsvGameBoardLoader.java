@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 
 import cz.uhk.pro2.flappy.game.GameBoard;
 import cz.uhk.pro2.flappy.game.Tile;
+import cz.uhk.pro2.flappy.game.tiles.BonusTile;
 import cz.uhk.pro2.flappy.game.tiles.EmptyTile;
 import cz.uhk.pro2.flappy.game.tiles.WallTile;
 
@@ -61,12 +62,12 @@ public class CsvGameBoardLoader implements GameBoardLoader{
 				cells = br.readLine().split(";");
 				for (int j = 0; j<columns;j++){
 					String cell = (j<cells.length)?cells[j]:"";
-					
 //					získáme odpovídající typ dlaždice z hashmapy
 					tiles[i][j] = tileTypes.get(cell);
 				}
 			}
 			GameBoard gb = new GameBoard(tiles);
+			gb.setTile(tileTypes.get(""));
 			return gb;
 		} catch (IOException e) {
 			throw new RuntimeException("Occured error while reading file", e);
@@ -93,7 +94,7 @@ public class CsvGameBoardLoader implements GameBoardLoader{
 			switch(type){
 				case "Wall": return new WallTile(resizedImage);
 				case "Empty": return new EmptyTile(resizedImage);
-				case "Bonus": return new EmptyTile(resizedImage);
+				case "Bonus": return new BonusTile(resizedImage);
 				default: throw new RuntimeException("Unknown tile type: "+type);
 			}
 			

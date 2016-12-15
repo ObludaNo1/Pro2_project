@@ -9,8 +9,8 @@ public class Bird implements TickAware {
 	
 //	"fyzika"
 	static double speed = 0.0;
-	static final double speedInc = 0.375;
-	static final double kickSpeed = -10.0;
+	static final double speedInc = 0.375*Tile.SIZE/30;
+	static final double kickSpeed = -10.0*Tile.SIZE/30;
 	
 //	souøadnice
 	double viewportX;

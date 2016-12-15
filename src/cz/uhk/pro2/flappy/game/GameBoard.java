@@ -2,8 +2,10 @@ package cz.uhk.pro2.flappy.game;
 
 import java.awt.Graphics;
 
+import cz.uhk.pro2.flappy.game.tiles.BonusTile;
 import cz.uhk.pro2.flappy.game.tiles.EmptyTile;
 import cz.uhk.pro2.flappy.game.tiles.WallTile;
+import cz.uhk.pro2.flappy.game.tiles.AbstrackTile;
 
 public class GameBoard implements TickAware {
 	Tile[][] tiles;
@@ -11,6 +13,7 @@ public class GameBoard implements TickAware {
 	int viewportWidth = 400;  // TODO
 	Bird bird;
 	boolean gameOver = false;
+	Tile tile;
 	
 	public GameBoard(){
 		this.tiles = new Tile[20][20]; //TODO
@@ -49,6 +52,10 @@ public class GameBoard implements TickAware {
 //							System.out.println("KOLIZE!!!!!!!");
 						    //doslo ke kolizi ptáka s dlaždicí
 							gameOver = true;
+//					System.out.println("Tile: "+tiles[i][j2].getClass()+" = "+BonusTile.class);
+					if(tiles[i][j2].getClass() == BonusTile.class)
+						if(bird.collidesWithRectangle(screenX, screenY, Tile.SIZE, Tile.SIZE))
+							setTile(i, j2, this.tile);
 				}
 			}				
 		}
@@ -79,6 +86,18 @@ public class GameBoard implements TickAware {
 	
 	public void kickTheBird(){
 		bird.kick();
+	}
+	
+	public void setTile(int x, int y, Tile tile){
+		if(x > 0 && y > 0){
+			if(x <= tiles.length && y <= tiles[0].length){
+				tiles[x][y] = tile;
+			}
+		}
+	}
+	
+	public void setTile(Tile t){
+		this.tile = t;
 	}
 	
 	
