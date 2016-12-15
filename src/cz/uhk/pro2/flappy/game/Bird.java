@@ -2,6 +2,7 @@ package cz.uhk.pro2.flappy.game;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
@@ -9,8 +10,8 @@ public class Bird implements TickAware {
 	
 //	"fyzika"
 	static double speed = 0.0;
-	static final double speedInc = 0.375*Tile.SIZE/30;
-	static final double kickSpeed = -10.0*Tile.SIZE/30;
+	static final double speedInc = 0.25*Tile.SIZE/20;
+	static final double kickSpeed = -4.0*Tile.SIZE/20;
 	
 //	souøadnice
 	double viewportX;
@@ -22,21 +23,26 @@ public class Bird implements TickAware {
 	int ticksToFall = 0;
 	
 	
-	public Bird(int initX, int initY){
+	Image image;
+	
+	public Bird(int initX, int initY, Image image){
 		this.viewportX = initX;
 		this.viewportY = initY;
+		this.image = image;
 	}
 	
 	
 	public void kick(){
+		if(speed > 0)speed = 0;
 		speed += kickSpeed;
 	}
 	
 	public void draw(Graphics g){
 		g.setColor(Color.GREEN);
-		g.fillOval((int)viewportX-Tile.SIZE/2, (int)viewportY - Tile.SIZE/2, Tile.SIZE, Tile.SIZE);
+//		g.fillOval((int)viewportX-Tile.SIZE/2, (int)viewportY - Tile.SIZE/2, Tile.SIZE, Tile.SIZE);
+		g.drawImage(image, (int)viewportX-Tile.SIZE/2, (int)viewportY - Tile.SIZE/2, null);
 		g.setColor(Color.BLACK);
-		g.drawString(viewportX+", "+viewportY, (int)viewportX, (int)viewportY);
+//		g.drawString(viewportX+", "+viewportY, (int)viewportX, (int)viewportY);
 //		g.drawString(viewportX+", "+viewportY, 20, 20);
 	}
 	

@@ -1,11 +1,10 @@
 package cz.uhk.pro2.flappy.game;
 
 import java.awt.Graphics;
+import java.awt.Image;
 
 import cz.uhk.pro2.flappy.game.tiles.BonusTile;
-import cz.uhk.pro2.flappy.game.tiles.EmptyTile;
 import cz.uhk.pro2.flappy.game.tiles.WallTile;
-import cz.uhk.pro2.flappy.game.tiles.AbstrackTile;
 
 public class GameBoard implements TickAware {
 	Tile[][] tiles;
@@ -15,19 +14,14 @@ public class GameBoard implements TickAware {
 	boolean gameOver = false;
 	Tile tile;
 	
-	public GameBoard(){
-		this.tiles = new Tile[20][20]; //TODO
-		bird = new Bird(viewportWidth/4,tiles.length*Tile.SIZE/2);
-	}
-	
 	/**
 	 * kresli cely herni svet(zdi,bonusy,ptaka) na platno g.
 	 * @param g
 	 */
 	
-	public GameBoard(Tile[][] tiles){
+	public GameBoard(Tile[][] tiles, Image image){
 		this.tiles = tiles;
-		bird = new Bird(viewportWidth/4,tiles.length*Tile.SIZE/2);
+		bird = new Bird(viewportWidth/4,tiles.length*Tile.SIZE/2, image);
 	}
 	
 	public void drawAndTestCollisions(Graphics g){
@@ -54,8 +48,10 @@ public class GameBoard implements TickAware {
 							gameOver = true;
 //					System.out.println("Tile: "+tiles[i][j2].getClass()+" = "+BonusTile.class);
 					if(tiles[i][j2].getClass() == BonusTile.class)
-						if(bird.collidesWithRectangle(screenX, screenY, Tile.SIZE, Tile.SIZE))
-							setTile(i, j2, this.tile);
+						if(bird.collidesWithRectangle(screenX, screenY, Tile.SIZE, Tile.SIZE)){
+//							tiles[i][j2].
+//							setTile(i, j2, this.tile);
+						}
 				}
 			}				
 		}
