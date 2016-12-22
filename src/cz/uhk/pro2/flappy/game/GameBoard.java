@@ -51,17 +51,13 @@ public class GameBoard implements TickAware {
                     }
 
                     if (t.getClass() == WallTile.class)
-                        if (bird.getY() < 0 || bird.getY() > tiles.length * Tile.SIZE || bird.collidesWithRectangle(screenX, screenY, Tile.SIZE, Tile.SIZE)) //							System.out.println("KOLIZE!!!!!!!");
-                        //doslo ke kolizi pt�ka s dla�dic�
-                            gameOver = false;
-//					System.out.println("Tile: "+tiles[i][j2].getClass()+" = "+BonusTile.class);
-                    if (t.getClass() == BonusTile.class) {
-                        if (bird.collidesWithRectangle(screenX, screenY, Tile.SIZE, Tile.SIZE)) {
-                            if( ((BonusTile)t).isActive() ){
+                        if (bird.getY() < 0 || bird.getY() > tiles.length * Tile.SIZE || bird.collidesWithRectangle(screenX, screenY, Tile.SIZE, Tile.SIZE))
+                            gameOver = true;
+                    
+                    if (t.getClass() == BonusTile.class)
+                        if (bird.collidesWithRectangle(screenX, screenY, Tile.SIZE, Tile.SIZE))
+                            if( ((BonusTile)t).isActive() )
                                 ((BonusTile)t).setActive(false);
-                            }
-                        }
-                    }
                 }
             }
         }
