@@ -1,6 +1,10 @@
 package cz.uhk.pro2.flappy.gui;
 
 import javax.swing.*;
+
+import cz.uhk.pro2.flappy.game.GameBoard;
+import cz.uhk.pro2.flappy.service.CsvGameBoardLoader;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,10 +35,20 @@ public class LevelPicker {
         }
     }
 
-    public String pickAndLoadLevel() {
+    String levelListURL;
+    
+    public LevelPicker(){
+    	this("http://edu.uhk.cz/~krizpa1/doku.php?id=flappy_bird_-_levely&do=export_raw");
+    }
+    
+    public LevelPicker(String url){
+    	this.levelListURL = url;
+    }
+    
+    public GameBoard pickAndLoadLevel() {
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new URL("http://edu.uhk.cz/~krizpa1/doku.php?id=flappy_bird_-_levely&do=export_raw").openStream()))) {
+                new URL(levelListURL).openStream(), "UTF-8"))) {
 
             List<LevelDescription> lines = new ArrayList<>();
             String line = null;
@@ -57,7 +71,9 @@ public class LevelPicker {
                     possibilities,
                     null);
 
-            return s.url;
+            CsvGameBoardLoader loader = new CsvGameBoardLoader(new URL(s.url).openStream());
+            
+            return loader.loadLevel();
 
         } catch (MalformedURLException e) {
             e.printStackTrace();

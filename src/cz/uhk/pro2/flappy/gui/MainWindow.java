@@ -35,17 +35,20 @@ public class MainWindow extends JFrame {
     }
 
     public MainWindow() {
-        try (InputStream is = new FileInputStream("level.csv")) {
-            GameBoardLoader loader = new CsvGameBoardLoader(is);
-            gameBoard = loader.loadLevel();
-
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found");
-            e.printStackTrace();
-            System.out.println("File not found");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try (InputStream is = new FileInputStream("level.csv")) {
+//            GameBoardLoader loader = new CsvGameBoardLoader(is);
+//            gameBoard = loader.loadLevel();
+//
+//        } catch (FileNotFoundException e) {
+//            System.out.println("File not found");
+//            e.printStackTrace();
+//            System.out.println("File not found");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    	
+    	LevelPicker picker = new LevelPicker();
+    	gameBoard = picker.pickAndLoadLevel();
 
 //		gameBoard = new GameBoard();
         add(pnl, BorderLayout.CENTER);
@@ -64,7 +67,7 @@ public class MainWindow extends JFrame {
         });
 
         Timer t = new Timer(20, e -> {
-            x+=5;
+            x+=1;
             gameBoard.tick(x);
             pnl.repaint();
         });
