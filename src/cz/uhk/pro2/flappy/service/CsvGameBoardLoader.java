@@ -41,6 +41,7 @@ public class CsvGameBoardLoader implements GameBoardLoader{
 			int typeCount = Integer.parseInt(cells[0]);
 			Map<String, Tile> tileTypes = new HashMap<>();
 			BufferedImage birdBufferedImage = null;
+//                        Tile referencedTile 
 			for(int i = 0; i<typeCount;i++){
 				cells = br.readLine().split(";");
 				String tileType = cells[0];
@@ -72,8 +73,9 @@ public class CsvGameBoardLoader implements GameBoardLoader{
 				cells = br.readLine().split(";");
 				for (int j = 0; j<columns;j++){
 					String cell = (j<cells.length)?cells[j]:"";
-//					získáme odpovídající typ dlaždice z hashmapy
-					tiles[i][j] = tileTypes.get(cell);
+                                        
+//					zï¿½skï¿½me odpovï¿½dajï¿½cï¿½ typ dlaï¿½dice z hashmapy
+					tiles[i][j] = (tileTypes.get(cell).getClass() != BonusTile.class)?tileTypes.get(cell):new BonusTile(((BonusTile)tileTypes.get(cell)).getImage(), (EmptyTile)tileTypes.get(""));
 				}
 			}
 			GameBoard gb = new GameBoard(tiles, birdBufferedImage);
@@ -91,7 +93,7 @@ public class CsvGameBoardLoader implements GameBoardLoader{
 			
 			BufferedImage resizedImage = loadImage(x, y, w, h, url);
 			
-			//vytvoøíme odpovídající typ dlaždice
+			//vytvoï¿½ï¿½me odpovï¿½dajï¿½cï¿½ typ dlaï¿½dice
 //			Tile tile;
 			switch(type){
 				case "Wall": return new WallTile(resizedImage);
@@ -111,13 +113,13 @@ public class CsvGameBoardLoader implements GameBoardLoader{
 
 
 	private BufferedImage loadImage(int x, int y, int w, int h, String url) throws IOException, MalformedURLException {
-		// stáhnout img z URL a uložit do promìnné
+		// stï¿½hnout img z URL a uloï¿½it do promï¿½nnï¿½
 		BufferedImage originalImage = ImageIO.read(new URL(url));
 		
-		//vyøezání odpovídajícího spritu z velkého obrázku
+		//vyï¿½ezï¿½nï¿½ odpovï¿½dajï¿½cï¿½ho spritu z velkï¿½ho obrï¿½zku
 		BufferedImage croppedImage = originalImage.getSubimage(x, y, w, h);
 		
-		//zmenšíme/zvìtšíme, aby sedìl na velikost dlaždice
+		//zmenï¿½ï¿½me/zvï¿½tï¿½ï¿½me, aby sedï¿½l na velikost dlaï¿½dice
 		BufferedImage resizedImage = new BufferedImage(Tile.SIZE, Tile.SIZE, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = resizedImage.createGraphics();
 		g.drawImage(croppedImage, 0, 0, Tile.SIZE, Tile.SIZE, null);

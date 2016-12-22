@@ -7,94 +7,102 @@ import cz.uhk.pro2.flappy.game.tiles.BonusTile;
 import cz.uhk.pro2.flappy.game.tiles.WallTile;
 
 public class GameBoard implements TickAware {
-	Tile[][] tiles;
-	int shiftX=30;
-	int viewportWidth = 400;  // TODO
-	Bird bird;
-	boolean gameOver = false;
-	Tile tile;
-	
-	/**
-	 * kresli cely herni svet(zdi,bonusy,ptaka) na platno g.
-	 * @param g
-	 */
-	
-	public GameBoard(Tile[][] tiles, Image image){
-		this.tiles = tiles;
-		bird = new Bird(viewportWidth/4,tiles.length*Tile.SIZE/2, image);
-	}
-	
-	public void drawAndTestCollisions(Graphics g){
-		int minJ = shiftX/Tile.SIZE; //spocitame prvni j index bunky kterou ma smysl kreslit (je videt na obrazovce)
-		int maxJ = minJ + viewportWidth/Tile.SIZE + 2; //+2 protoze celociselne delime jak shiftX tak viewportWidth ale chceme 'zaokrouhlit' nahoru
-		for(int i = 0; i < tiles.length; i++){
-			for(int j = minJ; j <= maxJ ; j++){
-				// chceme, aby se svìt toèil dokola 0-19
-				// j2 se pohybuje od 0 do poèet sloupcù - 1
-				int j2 = j % tiles[0].length;
-				Tile t = tiles[i][j2];
-				if(t != null){ //je na souradnicich i j dlazdice?
-					int screenX=j*Tile.SIZE-shiftX;
-					int screenY=i*Tile.SIZE;
-					
-					// nakreslíme dlaždici
-					t.draw(g, screenX, screenY);
-					//otestujeme možnou kolizi dlaždice s ptákem
-					
-					if(tiles[i][j2].getClass() == WallTile.class)
-						if(bird.getY()<0 || bird.getY()>tiles.length*Tile.SIZE || bird.collidesWithRectangle(screenX, screenY, Tile.SIZE, Tile.SIZE))
-//							System.out.println("KOLIZE!!!!!!!");
-						    //doslo ke kolizi ptáka s dlaždicí
-							gameOver = true;
+
+    Tile[][] tiles;
+    int shiftX = 30;
+    int viewportWidth = 400;  // TODO
+    Bird bird;
+    boolean gameOver = false;
+    Tile tile;
+
+    /**
+     * kresli cely herni svet(zdi,bonusy,ptaka) na platno g.
+     *
+     * @param g
+     */
+    public GameBoard(Tile[][] tiles, Image image) {
+        this.tiles = tiles;
+        bird = new Bird(viewportWidth / 4, tiles.length * Tile.SIZE / 2, image);
+    }
+
+    public void drawAndTestCollisions(Graphics g) {
+        int minJ = shiftX / Tile.SIZE; //spocitame prvni j index bunky kterou ma smysl kreslit (je videt na obrazovce)
+        int maxJ = minJ + viewportWidth / Tile.SIZE + 2; //+2 protoze celociselne delime jak shiftX tak viewportWidth ale chceme 'zaokrouhlit' nahoru
+        int lastIndex = (((shiftX/Tile.SIZE) % tiles[0].length) == 0)?(tiles[0].length-1):((shiftX/Tile.SIZE) % tiles[0].length)-1;
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = minJ; j <= maxJ; j++) {
+				// chceme, aby se svï¿½t toï¿½il dokola 0-19
+                // j2 se pohybuje od 0 do poï¿½et sloupcï¿½ - 1
+                int j2 = j % tiles[0].length;
+                Tile t = tiles[i][j2];
+                if (t != null) { //je na souradnicich i j dlazdice?
+                    int screenX = j * Tile.SIZE - shiftX;
+                    int screenY = i * Tile.SIZE;
+
+                    // nakreslï¿½me dlaï¿½dici
+                    t.draw(g, screenX, screenY);
+					//otestujeme moï¿½nou kolizi dlaï¿½dice s ptï¿½kem
+                    
+                    if(screenX >= Tile.SIZE*(tiles[0].length-3)){
+                        if(t.getClass() == BonusTile.class){
+                            System.out.println("Bonus reactivate");
+                            ((BonusTile)t).setActive(true);
+                        }
+                    }
+
+                    if (t.getClass() == WallTile.class)
+                        if (bird.getY() < 0 || bird.getY() > tiles.length * Tile.SIZE || bird.collidesWithRectangle(screenX, screenY, Tile.SIZE, Tile.SIZE)) //							System.out.println("KOLIZE!!!!!!!");
+                        //doslo ke kolizi ptï¿½ka s dlaï¿½dicï¿½
+                            gameOver = false;
 //					System.out.println("Tile: "+tiles[i][j2].getClass()+" = "+BonusTile.class);
-					if(tiles[i][j2].getClass() == BonusTile.class)
-						if(bird.collidesWithRectangle(screenX, screenY, Tile.SIZE, Tile.SIZE)){
-//							tiles[i][j2].
-//							setTile(i, j2, this.tile);
-						}
-				}
-			}				
-		}
-		
-		bird.draw(g);
-	}
+                    if (t.getClass() == BonusTile.class) {
+                        if (bird.collidesWithRectangle(screenX, screenY, Tile.SIZE, Tile.SIZE)) {
+                            if( ((BonusTile)t).isActive() ){
+                                ((BonusTile)t).setActive(false);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < tiles.length; i++) {
+            if(tiles[i][lastIndex].getClass() == BonusTile.class){
+                ((BonusTile)tiles[i][lastIndex]).setActive(true);
+            }
+        }            
 
-	@Override
-	public void tick(long ticksSinceStart) {
-//		s každým tickem ve høe posuneme hru o jeden px
-//		tj. poèet tickù a pixelù posunu se rovnají
-		
-		if(!gameOver){
-			shiftX = (int)ticksSinceStart;
-			bird.tick(ticksSinceStart);
-			
-		}
-		
-//		TODO dame vedet jeste ptakovi ze hodiny ticknuli
-		
-		
-		
-	}
+        bird.draw(g);
+    }
 
-	public int getHeightPix() {
-		return Tile.SIZE*tiles.length;
-	}
-	
-	public void kickTheBird(){
-		bird.kick();
-	}
-	
-	public void setTile(int x, int y, Tile tile){
-		if(x > 0 && y > 0){
-			if(x <= tiles.length && y <= tiles[0].length){
-				tiles[x][y] = tile;
-			}
-		}
-	}
-	
-	public void setTile(Tile t){
-		this.tile = t;
-	}
-	
-	
+    @Override
+    public void tick(long ticksSinceStart) {
+//		s kaï¿½dï¿½m tickem ve hï¿½e posuneme hru o jeden px
+//		tj. poï¿½et tickï¿½ a pixelï¿½ posunu se rovnajï¿½
+
+        if (!gameOver) {
+            shiftX = (int) ticksSinceStart;
+            bird.tick(ticksSinceStart);
+
+        }
+
+    }
+
+    public int getHeightPix() {
+        return Tile.SIZE * tiles.length;
+    }
+
+    public void kickTheBird() {
+        bird.kick();
+    }
+
+    public void setTile(int x, int y, Tile tile) {
+        if (x > 0 && y > 0)
+            if (x <= tiles.length && y <= tiles[0].length)
+                tiles[x][y] = tile;
+    }
+
+    public void setTile(Tile t) {
+        this.tile = t;
+    }
+
 }
