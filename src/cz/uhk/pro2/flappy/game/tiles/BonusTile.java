@@ -16,7 +16,11 @@ public class BonusTile extends AbstrackTile {
         this.emptyTile = emptyTile;
         active = true;
     }
-
+    
+    public BonusTile(BonusTile bonus){
+    	this(bonus.img, bonus.emptyTile);
+    }
+    
     @Override
     public void draw(Graphics g, int x, int y) {
         if(!active)
@@ -33,8 +37,5 @@ public class BonusTile extends AbstrackTile {
         return active;
     }
     
-    public Image getImage (){
-        return super.img;
-    }
-
+    
 }

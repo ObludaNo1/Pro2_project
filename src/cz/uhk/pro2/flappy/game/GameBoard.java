@@ -52,7 +52,7 @@ public class GameBoard implements TickAware {
 
                     if (t.getClass() == WallTile.class)
                         if (bird.getY() < 0 || bird.getY() > tiles.length * Tile.SIZE || bird.collidesWithRectangle(screenX, screenY, Tile.SIZE, Tile.SIZE))
-                            gameOver = true;
+                            gameOver = false;
                     
                     if (t.getClass() == BonusTile.class)
                         if (bird.collidesWithRectangle(screenX, screenY, Tile.SIZE, Tile.SIZE))

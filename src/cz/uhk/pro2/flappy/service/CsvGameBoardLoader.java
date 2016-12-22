@@ -75,7 +75,7 @@ public class CsvGameBoardLoader implements GameBoardLoader{
 					String cell = (j<cells.length)?cells[j]:"";
                                         
 //					z�sk�me odpov�daj�c� typ dla�dice z hashmapy
-					tiles[i][j] = (tileTypes.get(cell).getClass() != BonusTile.class)?tileTypes.get(cell):new BonusTile(((BonusTile)tileTypes.get(cell)).getImage(), (EmptyTile)tileTypes.get(""));
+					tiles[i][j] = (tileTypes.get(cell).getClass() != BonusTile.class)?tileTypes.get(cell):new BonusTile((BonusTile) tileTypes.get(cell));
 				}
 			}
 			GameBoard gb = new GameBoard(tiles, birdBufferedImage);

@@ -64,7 +64,7 @@ public class MainWindow extends JFrame {
         });
 
         Timer t = new Timer(20, e -> {
-            x+=2;
+            x+=5;
             gameBoard.tick(x);
             pnl.repaint();
         });
